@@ -2,12 +2,18 @@ const fs = require('fs')
 const dotenv = require('dotenv')
 
 
+const ignoredVariables = [
+  'AWS_ACCESS_KEY_ID',
+  'AWS_SECRET_ACCESS_KEY',
+  'AWS_REGION',
+]
+
 const dotEnvExists = (stage) => {
   try{
     fs.accessSync(`${process.cwd()}/.env${stage ? `.${stage}` : ''}`, fs.constants.F_OK)
   } catch(e){
     if(!process.env.CI){
-      throw new Error(`> Trailblazer: .env${stage ? `.${stage}` : ''} file not found. For safety, \
+      throw new Error(`Trailblazer: .env${stage ? `.${stage}` : ''} file not found. For safety, \
 manual deployments must use file based environment variables.`)
     }
 
@@ -29,21 +35,24 @@ const getVariablesFromDotEnv = (variables, stage) => {
     if(index !== -1) {
       requiredVariables.splice(index, 1)
     } else {
-      unknownVariables.push(variable)
+      if (!ignoredVariables.find(v => v === variable)) {
+        unknownVariables.push(variable)
+      }
     }
   }
 
   if(requiredVariables.length){
-    throw new Error(`> Trailblazer: you need to set the following \
+    throw new Error(`Trailblazer: you need to set the following \
 variable${requiredVariables.length !== 1 ? 's' : ''} on your .env${stage ? `.${stage}` : ''} \
 file: ${requiredVariables.join(', ')}.`)
   }
 
   if(unknownVariables.length){
-    throw new Error(`> Trailblazer: the following \
-variable${unknownVariables.length !== 1 ? 's' : ''} are set on your \
-.env${stage ? `.${stage}` : ''} file, but are not set on the "variables" array of your \
-next.config.js file: ${unknownVariables.join(', ')}. Did you forget to set them?`)
+    throw new Error(`Trailblazer: the following \
+variable${unknownVariables.length !== 1 ? 's are' : ' is'} set on your \
+.env${stage ? `.${stage}` : ''} file, but ${unknownVariables.length !== 1 ? 'are' : 'is'} not set \
+on the "variables" array of your next.config.js file: ${unknownVariables.join(', ')}. Did you \
+forget to set ${unknownVariables.length !== 1 ? 'them' : 'it'}?`)
   }
 
   return environmentVariables
@@ -63,7 +72,7 @@ const getVariablesFromEnvironment = (variables) => {
   }
 
   if(missingVariables.length){
-    throw new Error(`> Trailblazer: you need to set the following environment \
+    throw new Error(`Trailblazer: you need to set the following environment \
 variable${missingVariables.length !== 1 ? 's' : ''}: ${missingVariables.join(', ')}. You can \
 alternatively create a .env file containing ${missingVariables.length !== 1 ? 'these' : 'this'} \
 variable${missingVariables.length !== 1 ? 's' : ''}.`)

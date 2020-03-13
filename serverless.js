@@ -8,9 +8,9 @@ class Trailblazer extends Component {
   async default(inputs = {}){
     const { name, stage, config } = this.parseInputs(inputs)
     const template = await this.load('serverless-next.js', stage)
-    
+
     await this.customizeConfig(name, stage, config)
-    
+
     return await template(config)
   }
 
@@ -18,14 +18,14 @@ class Trailblazer extends Component {
     if(!args.stage){
       throw new Error('You need to provide a stage name using the --stage option.')
     }
-    
+
     const stage = this.sanitize(args.stage)
     const template = await this.load('serverless-next.js', stage)
     const output = await template.remove()
-    
+
     this.state = {}
     await this.save()
-    
+
     return output
   }
 
@@ -46,9 +46,9 @@ class Trailblazer extends Component {
   }
 
   async customizeConfig(name, stage, config){
-    const { stdout: hash } = await exec(`git -C ${__dirname} rev-parse --short HEAD`)
+    const { stdout: hash } = await exec(`git -C ${this.context.instance.root} rev-parse --short HEAD`)
     const id = `${name}--${stage}--${await this.getId()}`
-    
+
     // Sets the current deploy stage as an environment variable
     config.build = config.build || {}
     config.build.env = Object.assign({}, config.build.env, {
@@ -61,7 +61,7 @@ class Trailblazer extends Component {
     if(!config.cloudfront){
       config.cloudfront = {}
     }
-    
+
     config.cloudfront.comment = config.cloudfront.comment || `${name} | ${stage} (${hash.replace('\n', '')})`
   }
 
@@ -70,7 +70,7 @@ class Trailblazer extends Component {
       this.state.id = this.context.resourceId()
       await this.save()
     }
-    
+
     return this.state.id
   }
 
