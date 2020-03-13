@@ -1,5 +1,3 @@
-const withTrailblazer = require('./environment')
+const withTrailblazer = require('./plugin')
 
-module.exports = {
-  withTrailblazer
-}
+module.exports = withTrailblazer
