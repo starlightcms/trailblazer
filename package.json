@@ -1,6 +1,6 @@
 {
   "name": "@starlightcms/trailblazer",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "",
   "main": "serverless.js",
   "scripts": {
