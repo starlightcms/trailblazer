@@ -10,10 +10,10 @@
   "license": "AGPL-3.0-only",
   "dependencies": {
     "@serverless/core": "^1.1.2",
+    "dotenv": "^8.1.0",
     "lodash": "^4.17.15",
     "minimist": "^1.2.0",
-    "serverless-next.js": "^1.9.3",
-    "dotenv": "^8.1.0"
+    "serverless-next.js": "^1.11.2"
   },
   "repository": {
     "type": "git",
