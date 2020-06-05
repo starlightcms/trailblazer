@@ -1,6 +1,5 @@
 const { Component } = require('@serverless/core')
 const { deburr } = require('lodash/string')
-const exec = require('util').promisify(require('child_process').exec)
 const args = require('minimist')(process.argv.slice(2))
 
 
@@ -46,7 +45,6 @@ class Trailblazer extends Component {
   }
 
   async customizeConfig(name, stage, config){
-    const { stdout: hash } = await exec(`git -C ${this.context.instance.root} rev-parse --short HEAD`)
     const id = `${name}--${stage}--${await this.getId()}`
 
     // Sets the current deploy stage as an environment variable
@@ -56,13 +54,7 @@ class Trailblazer extends Component {
     })
 
     config.bucketName = config.bucketName || id
-    config.name = config.name || { defaultLambda: id, apiLambda: id + '--api' }
-
-    if(!config.cloudfront){
-      config.cloudfront = {}
-    }
-
-    config.cloudfront.comment = config.cloudfront.comment || `${name} | ${stage} (${hash.replace('\n', '')})`
+    config.name = config.name || id
   }
 
   async getId(){
