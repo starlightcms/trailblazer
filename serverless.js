@@ -6,7 +6,7 @@ const args = require('minimist')(process.argv.slice(2))
 class Trailblazer extends Component {
   async default(inputs = {}){
     const { name, stage, config } = this.parseInputs(inputs)
-    const template = await this.load('serverless-next.js', stage)
+    const template = await this.load('@sls-next/serverless-component', stage)
 
     await this.customizeConfig(name, stage, config)
 
@@ -19,7 +19,7 @@ class Trailblazer extends Component {
     }
 
     const stage = this.sanitize(args.stage)
-    const template = await this.load('serverless-next.js', stage)
+    const template = await this.load('@sls-next/serverless-component', stage)
     const output = await template.remove()
 
     this.state = {}

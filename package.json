@@ -13,7 +13,7 @@
     "dotenv": "^8.1.0",
     "lodash": "^4.17.15",
     "minimist": "^1.2.0",
-    "serverless-next.js": "^1.11.2"
+    "@sls-next/serverless-component": "^1.15.1"
   },
   "repository": {
     "type": "git",
